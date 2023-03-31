@@ -1,27 +1,41 @@
 
-let url="https://lazy-lime-handkerchief.cyclic.app/changepassword"
-let userId=localStorage.getItem("userId");
-document.getElementById("submitPass").addEventListener("click",(event)=>{
+let url = "https://lazy-lime-handkerchief.cyclic.app/changepassword"
+let userId = localStorage.getItem("userId");
+document.getElementById("submitPass").addEventListener("click", (event) => {
     event.preventDefault();
-    let password=document.getElementById("initialpassword").value
-    let confirmpassword=document.getElementById("confirmpassword").value;
-    let data={
+    let password = document.getElementById("initialpassword").value
+    let confirmpassword = document.getElementById("confirmpassword").value;
+    let data = {
         userId,
         password
     }
-    console.log(password,confirmpassword);
-    if(password!=confirmpassword){
-        alert("Password does not match")
-    }else{
-        fetch(url, {
+    console.log(password, confirmpassword);
+    if (password !== confirmpassword) {
+        swal("Passwords do not Match", "", "info");
+    } else {
+        fetchRes(data)
+    }
+})
+async function fetchRes(obj) {
+    let res = await fetch(url, {
         method: 'PATCH',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data)
-    }).then(res =>res.json()).then(sol => alert(sol.msg)).catch((err)=> console.log(err));
+        body: JSON.stringify(obj)
+    })
+    let data = await res.json()
+    if (data.done) {
+        swal("Done!,Password Has Changed Successfully", " Redirecting...", "success");
+        setTimeout(() => {
+            window.location.href = "https://localhost:3000/"
+        }, 4000)
+    } else {
+        swal("Error", `${data.msg}`, "error");
     }
-})
+
+
+}
 
 // const changePass = async (data) => {
 
